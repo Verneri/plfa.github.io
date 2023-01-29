@@ -78,7 +78,8 @@ successor of two; and so on.
 Write out `7` in longhand.
 
 ```agda
--- Your code goes here
+seven : ℕ
+seven = suc (suc (suc (suc (suc (suc (suc zero))))))
 ```
 
 You will need to give both a type signature and definition for the
@@ -430,7 +431,19 @@ other word for evidence, which we will use interchangeably, is _proof_.
 Compute `3 + 4`, writing out your reasoning as a chain of equations, using the equations for `+`.
 
 ```agda
--- Your code goes here
+_ : 3 + 4 ≡ 7 
+_ = 
+  begin
+    3 + 4
+  ≡⟨⟩ 
+    suc (2 + 4)
+  ≡⟨⟩
+    suc (suc (1 + 4))
+  ≡⟨⟩
+    suc (suc (suc (0 + 4)))
+  ≡⟨⟩
+    7
+  ∎
 ```
 
 
@@ -492,7 +505,20 @@ Compute `3 * 4`, writing out your reasoning as a chain of equations, using the e
 (You do not need to step through the evaluation of `+`.)
 
 ```agda
--- Your code goes here
+_ = 
+  begin
+    3 * 4
+  ≡⟨⟩
+    4 + (2 * 4)
+  ≡⟨⟩
+    4 + (4 + (1 * 4))
+  ≡⟨⟩
+    4 + (4 + (4 + (0 * 4)))
+  ≡⟨⟩
+    4 + (4 + (4 + 0))
+  ≡⟨⟩
+    12
+  ∎
 ```
 
 
@@ -506,7 +532,26 @@ Define exponentiation, which is given by the following equations:
 Check that `3 ^ 4` is `81`.
 
 ```agda
--- Your code goes here
+_^_ : ℕ → ℕ → ℕ
+m ^ zero = 1
+m ^ suc n = m * (m ^ n)
+
+_ =
+  begin
+    3 ^ 4
+  ≡⟨⟩
+    3 * (3 ^ 3)
+  ≡⟨⟩
+    3 * (3 * (3 ^ 2))
+  ≡⟨⟩
+    3 * (3 * (3 * (3 ^ 1)))
+  ≡⟨⟩
+    3 * (3 * (3 * (3 * (3 ^ 0))))
+  ≡⟨⟩
+    3 * (3 * (3 * (3 * 1)))
+  ≡⟨⟩
+    81
+  ∎
 ```
 
 
@@ -589,7 +634,32 @@ Section [Logical Connectives](/Decidable/#logical-connectives).
 Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equations.
 
 ```agda
--- Your code goes here
+_ = 
+  begin
+    5 ∸ 3
+  ≡⟨⟩
+    4 ∸ 2
+  ≡⟨⟩
+    3 ∸ 1
+  ≡⟨⟩
+    2 ∸ 0
+  ≡⟨⟩
+    2
+  ∎
+
+_ =
+  begin
+    3 ∸ 5
+  ≡⟨⟩ 
+    2 ∸ 4 
+  ≡⟨⟩ 
+    1 ∸ 3
+  ≡⟨⟩
+    0 ∸ 2
+  ≡⟨⟩
+    0
+  ∎
+  
 ```
 
 
@@ -936,6 +1006,188 @@ represents a positive natural, and represent zero by `⟨⟩ O`.
 Confirm that these both give the correct answer for zero through four.
 
 ```agda
+inc : Bin → Bin
+inc ⟨⟩ = ⟨⟩ I 
+inc (m O) = m I
+inc (m I) = (inc m) O
+
+_ = 
+  begin
+    inc (⟨⟩ O)
+  ≡⟨⟩ 
+    ⟨⟩ I
+  ∎
+
+_ =
+  begin
+    inc (⟨⟩ I)
+  ≡⟨⟩ 
+    (inc ⟨⟩) O
+  ≡⟨⟩ 
+    ⟨⟩ I O
+  ∎
+
+_ =
+  begin
+    inc (⟨⟩ I O)
+  ≡⟨⟩ 
+    ⟨⟩ I I
+  ∎
+
+_ =
+  begin
+    inc (⟨⟩ I I)
+  ≡⟨⟩ 
+    (inc (⟨⟩ I)) O
+  ≡⟨⟩ 
+    ((inc ⟨⟩) O) O
+  ≡⟨⟩ 
+    ((⟨⟩ I) O) O
+  ≡⟨⟩ 
+    ⟨⟩ I O O 
+  ∎
+
+_ =
+  begin
+    inc (⟨⟩ I O O)
+  ≡⟨⟩ 
+    ⟨⟩ I O I
+  ∎
+
+to : ℕ → Bin
+to zero = ⟨⟩ O
+to (suc n) = inc (to n)
+
+_ =
+  begin
+    to zero
+  ≡⟨⟩
+    ⟨⟩ O 
+  ∎
+
+_ =
+  begin
+    to 1
+  ≡⟨⟩ 
+    inc (to zero)
+  ≡⟨⟩
+    inc (⟨⟩ O)
+  ≡⟨⟩ 
+    ⟨⟩ I
+  ∎
+
+_ =
+  begin
+    to 2
+  ≡⟨⟩ 
+    inc (to 1)
+  ≡⟨⟩ 
+    inc (inc (to zero))
+  ≡⟨⟩ 
+    inc (inc (⟨⟩ O))
+  ≡⟨⟩ 
+    ⟨⟩ I O
+  ∎
+
+_ =
+  begin
+    to 3
+  ≡⟨⟩
+    inc (to 2)
+  ≡⟨⟩
+    inc (inc (to 1))
+  ≡⟨⟩
+    inc (inc (inc (to zero)))
+  ≡⟨⟩
+    inc (inc (inc (⟨⟩ O)))
+  ≡⟨⟩
+    ⟨⟩ I I
+  ∎
+
+_ =
+  begin
+    to 4
+  ≡⟨⟩
+    inc (to 3)
+  ≡⟨⟩
+    inc (inc (to 2))
+  ≡⟨⟩
+    inc (inc (inc (to 1)))
+  ≡⟨⟩
+    inc (inc (inc (inc (to zero))))
+  ≡⟨⟩
+    inc (inc (inc (inc (⟨⟩ O))))
+  ≡⟨⟩
+    ⟨⟩ I O O
+  ∎
+
+from : Bin → ℕ
+from ⟨⟩ = zero
+from (b O) = 2 * (from b)
+from (b I) = 2 * (from b) + 1
+
+_ =
+  begin
+    from (⟨⟩ O)
+  ≡⟨⟩
+    2 * (from ⟨⟩)
+  ≡⟨⟩
+    2 * zero
+  ≡⟨⟩
+    zero
+  ∎ 
+
+_ =
+  begin
+    from (⟨⟩ I)
+  ≡⟨⟩
+    2 * (from ⟨⟩) + 1
+  ≡⟨⟩
+    2 * zero + 1
+  ≡⟨⟩
+    1
+  ∎
+
+_ =
+  begin
+    from (⟨⟩ I O)
+  ≡⟨⟩
+    2 * (from (⟨⟩ I))
+  ≡⟨⟩
+    2 * (2 * (from ⟨⟩) + 1)
+  ≡⟨⟩
+    2 * (2 * zero + 1)
+  ≡⟨⟩
+    2
+  ∎
+
+_ =
+  begin
+    from (⟨⟩ I I)
+  ≡⟨⟩
+    2 * (from (⟨⟩ I)) + 1
+  ≡⟨⟩
+    2 * (2 * (from ⟨⟩) + 1) + 1
+  ≡⟨⟩
+    2 * (2 * zero + 1) + 1
+  ≡⟨⟩
+    3
+  ∎
+
+_ =
+  begin
+    from (⟨⟩ I O O)
+  ≡⟨⟩
+    2 * (from (⟨⟩ I O))
+  ≡⟨⟩
+    2 * (2 * (from (⟨⟩ I)))
+  ≡⟨⟩
+    2 * (2 * (2 * (from ⟨⟩) + 1))
+  ≡⟨⟩
+    2 * (2 * (2 * zero + 1))
+  ≡⟨⟩
+    4
+  ∎
 -- Your code goes here
 ```
 
